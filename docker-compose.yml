@@ -1,0 +1,10 @@
+version: "2"
+services:
+    zksearch:
+        build: .
+        volumes:
+            - ./data:/data/
+        tmpfs: /tmp
+        env_file: .env
+        ports:
+            - "3032:80"

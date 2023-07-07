@@ -1,12 +1,13 @@
-FROM debian:8
+FROM debian:10
 
-RUN apt-get -qq update && apt-get install -qq -y --no-install-recommends \
+RUN apt-get -qq update && apt-get upgrade
+
+RUN apt-get install -qq -y --no-install-recommends \
     ca-certificates \
     curl \
     gawk \
     libexpat1 \
     libpq5 \
-    mysql-client \
     nginx \
     python \
     python-setuptools \
@@ -18,17 +19,25 @@ RUN apt-get -qq update && apt-get install -qq -y --no-install-recommends \
     unixodbc \
     uwsgi \
     uwsgi-plugin-python \
-&& pip install -q natsort
+    gnupg \
+    mariadb-client
 
-RUN curl -s \
-    http://sphinxsearch.com/files/sphinxsearch_2.2.11-release-1~jessie_amd64.deb \
-    -o /tmp/sphinxsearch.deb \
-&& dpkg -i /tmp/sphinxsearch.deb \
-&& rm /tmp/sphinxsearch.deb \
-&& easy_install -q flask-cache \
-&& pip install -q supervisor \
-&& mkdir -p /var/log/sphinxsearch \
-&& mkdir -p /var/log/supervisord
+RUN pip install -q natsort
+
+RUN apt-get install -qq -y --no-install-recommends sphinxsearch
+
+# RUN curl -s \
+#     http://sphinxsearch.com/files/sphinxsearch_2.2.11-release-1~jessie_amd64.deb \
+#     -o /tmp/sphinxsearch.deb 
+
+# RUN dpkg -i /tmp/sphinxsearch.deb 
+
+# RUN  rm /tmp/sphinxsearch.deb 
+
+RUN pip install flask-cache \
+    && pip install -q supervisor \
+    && mkdir -p /var/log/sphinxsearch \
+    && mkdir -p /var/log/supervisord
 
 VOLUME ["/data/"]
 
